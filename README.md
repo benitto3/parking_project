@@ -1,5 +1,5 @@
-# This is my first serious project based on Mask-RCNN.
-I've used a fork of the original Mask-RCNN by Matterport with implementation of Tensorflow V2 by ahmedfgad. Huge thanks to Adam Geitgey for the comprehensible guide on using Mask-RCNN which this program utilizes.
+# This is my first project based on Mask-RCNN.
+I've used a fork of the original [Mask_RCNN](https://github.com/matterport/Mask_RCNN) by Matterport with implementation of Tensorflow V2 by [ahmedfgad](https://github.com/ahmedfgad/Mask-RCNN-TF2). Huge thanks to [Adam Geitgey](https://medium.com/@ageitgey) for the comprehensive guide on using Mask-RCNN which this program utilizes.
 
 # Beginner installation steps for GNU/Linux (Fedora):
 
@@ -39,7 +39,7 @@ I've used a fork of the original Mask-RCNN by Matterport with implementation of 
      Command: pip install pyqt6 or sudo dnf install python3-tkinter, or both
      Command: python3 test.py
 19. Run the main program.
-     Command: python3 parking.py
+     Command: python3 detection.py
 15. Deactivate after use.
      Command: deactivate
 

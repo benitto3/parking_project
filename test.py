@@ -32,7 +32,7 @@ model.load_weights(filepath="mask_rcnn_coco.h5",
                    by_name=True)
 
 # load the input image, convert it from BGR to RGB channel
-image = cv2.imread("parking.jpg")
+image = cv2.imread("sample/image/parking.jpg")
 image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
 # Perform a forward pass of the network to obtain the results
