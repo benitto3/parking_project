@@ -45,19 +45,24 @@ model = MaskRCNN(mode="inference", model_dir=MODEL_DIR, config=MaskRCNNConfig())
 # Load pre-trained model
 model.load_weights(COCO_MODEL_PATH, by_name=True)
 
-# Location of parking spaces
-parked_car_boxes = None
-
 # Load the video file we want to run detection on
 video_capture = cv2.VideoCapture(VIDEO_SOURCE)
 
+# Location of parking spaces
+parked_car_boxes = None
+# do we have free space
+free_space = False
+# list of all parking spaces
+parking_list = []
+# list of all detected free parking spaces
+free_space_list = []
 # frames of free parking space in a row
 free_space_frames = 0
-# total parking space
+# total parking spaces number
 total_car_boxes = 0
-# total free space
+# total free parking spaces number
 free_parking_space = 0
-free_parking_space_compare = 0
+
 # Loop over each frame of video
 while video_capture.isOpened():
     success, frame = video_capture.read()
@@ -76,31 +81,27 @@ while video_capture.isOpened():
         # The first frame of video - assume all the cars detected are in parking spaces.
         # Save the location of each car as a parking space box and go to the next frame of video.
         parked_car_boxes = get_car_boxes(r['rois'], r['class_ids'])
-
-        for each_box in parked_car_boxes:
-                    print("Parking space coordinates: ", each_box)
-                    total_car_boxes += 1
+        total_car_boxes = len(parked_car_boxes)
         print(f"Total parking spaces are {total_car_boxes}.")
-        print(f"Available parking spaces: {free_parking_space}")
-        
+        # get index and value of each detected space and show it
+        for i, each_box in enumerate(parked_car_boxes):
+            print(f"Parking space {i + 1} coordinates: ", each_box)
+            # turn each box into a string and remove space
+            str_park = str(each_box).replace(' ', '')
+            # add each string to simple list instead of complex numpy array
+            parking_list.append(str_park)    
     else:
         # We already know where the parking spaces are. Check if any are currently unoccupied.
         # Get where cars are currently located in the frame
         car_boxes = get_car_boxes(r['rois'], r['class_ids'])
         # See how much those cars overlap with the known parking spaces
         overlaps = mrcnn.utils.compute_overlaps(parked_car_boxes, car_boxes)
-
-        # No free space yet
-        free_space = False
-        print("No available free parking space yet.")
-
+        
         # Loop through each known parking space box
         for parking_area, overlap_areas in zip(parked_car_boxes, overlaps):
-
             # For this parking space, find the max amount it was covered by any
             # car that was detected in our image
             max_IoU_overlap = np.max(overlap_areas)
-
             # Get the top-left and bottom-right coordinates of the parking area
             y1, x1, y2, x2 = parking_area
 
@@ -111,11 +112,11 @@ while video_capture.isOpened():
                 cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 3)
                 # Flag that we have seen at least one open space
                 free_space = True
-                
+                # turn current free space to string without spaces
+                free_park = str(parking_area).replace(' ', '')    
             else:
                 # Parking space is still occupied - draw a red box around it
                 cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 1)
-
             # Write the IoU measurement inside the box
             font = cv2.FONT_HERSHEY_DUPLEX
             cv2.putText(frame, f"{max_IoU_overlap:0.2}", (x1 + 6, y2 - 6), font, 0.5, (255, 255, 255))
@@ -127,11 +128,13 @@ while video_capture.isOpened():
             # If no spots are free, reset the count
             free_space_frames = 0
 
-        # If a space has been free for several frames, we are pretty sure it is really free!
-        if free_space_frames > 2:
-           free_parking_space += 1
-           print(f"Available parking spaces: {free_parking_space}")
-
+        # If a space has been free for several frames, then it is really free
+        # Also we should make sure that we are seeing new free space, not a previous one 
+        if free_space_frames > 2 and free_park not in free_space_list:
+            # if it is a new free spot, add it to our list of free spaces
+            free_space_list.append(free_park)
+            free_parking_space = len(free_space_list)
+        print(f"Available parking spaces: {free_parking_space}")
 
         # Show the frame of video on the screen
         cv2.imshow('Video', frame)
