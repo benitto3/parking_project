@@ -1,5 +1,6 @@
 # This is my first project based on Mask-RCNN.
 I've used a fork of the original [Mask_RCNN](https://github.com/matterport/Mask_RCNN) by Matterport with implementation of Tensorflow V2 by [ahmedfgad](https://github.com/ahmedfgad/Mask-RCNN-TF2). Huge thanks to [Adam Geitgey](https://medium.com/@ageitgey) for the comprehensive guide on using Mask-RCNN which this program utilizes.
+![Marking free parking spaces](sample/free_parking_space.gif)
 
 # Beginner installation steps for GNU/Linux (Fedora):
 
