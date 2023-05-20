@@ -69,6 +69,10 @@ free_parking_space = 0
 # check is this the first detection
 first_detection = True
 
+def detect(filename, text):
+    with open(filename, "w") as file:
+        file.write(text)
+
 # Loop over each frame of video
 while video_capture.isOpened():
     success, frame = video_capture.read()
@@ -98,6 +102,20 @@ while video_capture.isOpened():
             print(f"Parking space {i + 1} coordinates: ", box_without_spaces)
             # add each string to a simple list instead of complex numpy array
             parking_list.append(box_without_spaces)
+
+        detect("parking.html", f"""
+        <!DOCTYPE html>
+        <html>
+           <head>
+               <title>Parking space monitoring</title>
+           </head>                    
+        <body>
+           <p>Total number of parking spaces: { total_car_boxes }</p>
+           <img width="50%" src="result/first_detection.jpg" alt="Total detected parking spaces."/> <br />
+           <p>Current free parking space number: { free_parking_space }</p>
+           <img width="50%" src="result/last_detection.jpg" alt="Currently free parking spaces."/> <br />
+        </body>
+        </html>""")
              
     else:
         # We already know where the parking spaces are. 
@@ -154,13 +172,28 @@ while video_capture.isOpened():
         # How many free parking spaces do we have? Show it.
         free_parking_space = len(free_space_list)        
         print(f"Available parking spaces: {free_parking_space}")
-
+        
         # Save the last detection image
         cv2.imwrite('result/last_detection.jpg', frame)
         # If it is the first frame of detection, save it
         if first_detection:
             cv2.imwrite('result/first_detection.jpg', frame)
             first_detection = False
+
+        detect("parking.html", f"""
+        <!DOCTYPE html>
+        <html>
+           <head>
+              <title>Parking space monitoring</title>
+           </head>                                 
+           <body>
+              <p>Total number of parking spaces: { total_car_boxes }</p>
+              <img width="50%" src="result/first_detection.jpg" alt="Total detected parking spaces."/> <br />
+              <p>Current free parking space number: { free_parking_space }</p>
+              <img width="50%" src="result/last_detection.jpg" alt="Currently free parking spaces."/> <br />
+           </body>
+        </html>""")
+
 
         # Show the frame of video on the screen
         cv2.imshow('To stop video, press "Q"', frame)

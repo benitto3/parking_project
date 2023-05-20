@@ -2,3 +2,4 @@ venv_3_7/
 mask_rcnn_coco.h5
 .mypy_cache/
 mrcnn/__pycache__/
+__pycache__
