@@ -94,28 +94,28 @@ while video_capture.isOpened():
         # r['rois'] bounding box
         parked_car_boxes = get_car_boxes(r['rois'], r['class_ids'])
         total_car_boxes = len(parked_car_boxes)
-        print(f"Total parking spaces are {total_car_boxes}.")
+        print(f"Барлық көлік тұрағының саны {total_car_boxes}.")
         # get index and value of each detected space and show it
         for i, each_box in enumerate(parked_car_boxes):
             # Getting rid of unusual spaces for consistency
             box_without_spaces = str(each_box).replace('[ ', '[')\
                                               .replace('  ', ' ')
-            print(f"Parking space {i + 1} coordinates: ", box_without_spaces)
+            print(f"№ {i + 1} көлік тұрағы координаттары: ", box_without_spaces)
             # add each string to a simple list instead of complex numpy array
             parking_list.append(box_without_spaces)
             
         # Overwrite html so it could show us total number of parking spaces
-        detect("parking.html", f"""
+        detect("parking_kaz.html", f"""
         <!DOCTYPE html>
         <html>
            <head>
-               <title>Parking space monitoring</title>
+               <title>Көлік тұрағын бақылау</title>
            </head>                    
         <body>
-           <p>Total number of parking spaces: { total_car_boxes }</p>
-           <img width="50%" src="result/first_detection.jpg" alt="Total detected parking spaces."/> <br />
-           <p>Current free parking space number: { free_parking_space }</p>
-           <img width="50%" src="result/last_detection.jpg" alt="Currently free parking spaces."/> <br />
+           <p>Жалпы көлік тұрағының саны: { total_car_boxes }</p>
+           <img width="50%" src="result/first_detection.jpg" alt="Табылған жалпы көлік тұрақтары."/> <br />
+           <p>Босаған көлік тұрақтарының саны: { free_parking_space }</p>
+           <img width="50%" src="result/last_detection.jpg" alt="Табылған бос көлік тұрақтары."/> <br />
         </body>
         </html>""")
              
@@ -168,12 +168,12 @@ while video_capture.isOpened():
                 
             # Write the IoU measurement inside the box
             font = cv2.FONT_HERSHEY_DUPLEX
-            cv2.putText(frame, f"Probability there is a car: {max_IoU_overlap:0.2}", \
+            cv2.putText(frame, f"Max IoU: {max_IoU_overlap:0.2}", \
                                         (x1 + 6, y2 - 6), font, 0.5, (255, 255, 255))                   
             
         # How many free parking spaces do we have? Show it.
         free_parking_space = len(free_space_list)        
-        print(f"Available parking spaces: {free_parking_space}")
+        print(f"Қол жетімді көлік тұрақтары саны: {free_parking_space}")
         
         # Save the last detection image
         cv2.imwrite('result/last_detection.jpg', frame)
@@ -183,22 +183,22 @@ while video_capture.isOpened():
             first_detection = False
 
         # Overwrite html so we could see number of free parking spaces
-        detect("parking.html", f"""
+        detect("parking_kaz.html", f"""
         <!DOCTYPE html>
         <html>
            <head>
-              <title>Parking space monitoring</title>
+              <title>Көлік тұрағын бақылау</title>
            </head>                                 
            <body>
-              <p>Total number of parking spaces: { total_car_boxes }</p>
-              <img width="50%" src="result/first_detection.jpg" alt="Total detected parking spaces."/> <br />
-              <p>Current free parking space number: { free_parking_space }</p>
-              <img width="50%" src="result/last_detection.jpg" alt="Currently free parking spaces."/> <br />
+              <p>Жалпы көлік тұрағының саны: { total_car_boxes }</p>
+              <img width="50%" src="result/first_detection.jpg" alt="Табылған жалпы көлік тұрақтары."/> <br />
+              <p>Босаған көлік тұрақтарының саны: { free_parking_space }</p>
+              <img width="50%" src="result/last_detection.jpg" alt="Табылған бос көлік тұрақтары."/> <br />
            </body>
         </html>""")
 
         # Show the frame of video on the screen
-        cv2.imshow('To stop video, press "Q"', frame)
+        cv2.imshow('Video stop "Q"', frame)
 
     # Hit 'q' to quit
     if cv2.waitKey(1) & 0xFF == ord('q'):
