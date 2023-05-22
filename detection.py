@@ -105,7 +105,8 @@ while video_capture.isOpened():
             parking_list.append(box_without_spaces)
             
         # Overwrite html so it could show us total number of parking spaces
-        detect("parking.html", f"""
+        # after running it will turn {{{{ into {{ Jinja code
+        detect("templates/parking.html", f"""
         <!DOCTYPE html>
         <html>
            <head>
@@ -113,9 +114,11 @@ while video_capture.isOpened():
            </head>                    
         <body>
            <p>Total number of parking spaces: { total_car_boxes }</p>
-           <img width="50%" src="result/first_detection.jpg" alt="Total detected parking spaces."/> <br />
+           <img width="50%" src="{{{{ url_for('static', filename='first_detection.jpg') }}}}"
+            alt="Total detected parking spaces."/> <br />
            <p>Current free parking space number: { free_parking_space }</p>
-           <img width="50%" src="result/last_detection.jpg" alt="Currently free parking spaces."/> <br />
+           <img width="50%" src="{{{{ url_for('static', filename='last_detection.jpg') }}}}"
+            alt="Currently free parking spaces."/> <br />
         </body>
         </html>""")
              
@@ -176,14 +179,14 @@ while video_capture.isOpened():
         print(f"Available parking spaces: {free_parking_space}")
         
         # Save the last detection image
-        cv2.imwrite('result/last_detection.jpg', frame)
+        cv2.imwrite('static/last_detection.jpg', frame)
         # If it is the first frame of detection, save it
         if first_detection:
-            cv2.imwrite('result/first_detection.jpg', frame)
+            cv2.imwrite('static/first_detection.jpg', frame)
             first_detection = False
 
         # Overwrite html so we could see number of free parking spaces
-        detect("parking.html", f"""
+        detect("templates/parking.html", f"""
         <!DOCTYPE html>
         <html>
            <head>
@@ -191,9 +194,11 @@ while video_capture.isOpened():
            </head>                                 
            <body>
               <p>Total number of parking spaces: { total_car_boxes }</p>
-              <img width="50%" src="result/first_detection.jpg" alt="Total detected parking spaces."/> <br />
+              <img width="50%" src="{{{{ url_for('static', filename='first_detection.jpg') }}}}"
+               alt="Total detected parking spaces."/> <br />
               <p>Current free parking space number: { free_parking_space }</p>
-              <img width="50%" src="result/last_detection.jpg" alt="Currently free parking spaces."/> <br />
+              <img width="50%" src="{{{{ url_for('static', filename='last_detection.jpg') }}}}"
+               alt="Currently free parking spaces."/> <br />
            </body>
         </html>""")
 

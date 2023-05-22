@@ -41,7 +41,9 @@ I've used a fork of the original [Mask_RCNN](https://github.com/matterport/Mask_
      Command: python3 test.py
 19. Run the main program.
      Command: python3 detection.py
-15. Deactivate after use.
+20. To see the result on the web server, on another terminal window run the Flask webapp.
+     Command: python3 flask_web.py
+21. Deactivate after use.
      Command: deactivate
 
    

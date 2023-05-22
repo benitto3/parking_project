@@ -100,12 +100,13 @@ while video_capture.isOpened():
             # Getting rid of unusual spaces for consistency
             box_without_spaces = str(each_box).replace('[ ', '[')\
                                               .replace('  ', ' ')
-            print(f"№ {i + 1} көлік тұрағы координаттары: ", box_without_spaces)
+            print(f" № {i + 1} көлік тұрағы координаттары: ", box_without_spaces)
             # add each string to a simple list instead of complex numpy array
             parking_list.append(box_without_spaces)
             
         # Overwrite html so it could show us total number of parking spaces
-        detect("parking_kaz.html", f"""
+        # after running it will turn {{{{ into {{ Jinja code
+        detect("templates/parking_qazaq.html", f"""
         <!DOCTYPE html>
         <html>
            <head>
@@ -113,9 +114,11 @@ while video_capture.isOpened():
            </head>                    
         <body>
            <p>Жалпы көлік тұрағының саны: { total_car_boxes }</p>
-           <img width="50%" src="result/first_detection.jpg" alt="Табылған жалпы көлік тұрақтары."/> <br />
+           <img width="50%" src="{{{{ url_for('static', filename='first_detection.jpg') }}}}"
+            alt="Табылған жалпы көлік тұрақтары."/> <br />
            <p>Босаған көлік тұрақтарының саны: { free_parking_space }</p>
-           <img width="50%" src="result/last_detection.jpg" alt="Табылған бос көлік тұрақтары."/> <br />
+           <img width="50%" src="{{{{ url_for('static', filename='last_detection.jpg') }}}}"
+            alt="Табылған бос көлік тұрақтары."/> <br />
         </body>
         </html>""")
              
@@ -176,14 +179,14 @@ while video_capture.isOpened():
         print(f"Қол жетімді көлік тұрақтары саны: {free_parking_space}")
         
         # Save the last detection image
-        cv2.imwrite('result/last_detection.jpg', frame)
+        cv2.imwrite('static/last_detection.jpg', frame)
         # If it is the first frame of detection, save it
         if first_detection:
-            cv2.imwrite('result/first_detection.jpg', frame)
+            cv2.imwrite('static/first_detection.jpg', frame)
             first_detection = False
 
         # Overwrite html so we could see number of free parking spaces
-        detect("parking_kaz.html", f"""
+        detect("templates/parking_qazaq.html", f"""
         <!DOCTYPE html>
         <html>
            <head>
@@ -191,9 +194,11 @@ while video_capture.isOpened():
            </head>                                 
            <body>
               <p>Жалпы көлік тұрағының саны: { total_car_boxes }</p>
-              <img width="50%" src="result/first_detection.jpg" alt="Табылған жалпы көлік тұрақтары."/> <br />
+              <img width="50%" src="{{{{ url_for('static', filename='first_detection.jpg') }}}}"
+               alt="Табылған жалпы көлік тұрақтары."/> <br />
               <p>Босаған көлік тұрақтарының саны: { free_parking_space }</p>
-              <img width="50%" src="result/last_detection.jpg" alt="Табылған бос көлік тұрақтары."/> <br />
+              <img width="50%" src="{{{{ url_for('static', filename='last_detection.jpg') }}}}"
+               alt="Табылған бос көлік тұрақтары."/> <br />
            </body>
         </html>""")
 
