@@ -3,3 +3,4 @@ mask_rcnn_coco.h5
 .mypy_cache/
 mrcnn/__pycache__/
 __pycache__
+cam_dir/

@@ -68,7 +68,8 @@ total_car_boxes = 0
 free_parking_space = 0
 # check is this the first detection
 first_detection = True
-
+# check if the gate is open
+gate_open = False
 # Function for opening file, overwriting it and saving
 def detect(filename, text):
     with open(filename, "w") as file:
@@ -121,7 +122,9 @@ while video_capture.isOpened():
             alt="Табылған бос көлік тұрақтары."/> <br />
         </body>
         </html>""")
-             
+
+        print("Шлагбаум жабық.")
+        
     else:
         # We already know where the parking spaces are. 
         # Check if any are currently unoccupied.
@@ -185,6 +188,13 @@ while video_capture.isOpened():
             cv2.imwrite('static/first_detection.jpg', frame)
             first_detection = False
 
+        if free_parking_space != 0:
+            gate_open = True
+            print("Шлагбаум ашық.")
+        else:
+            gate_open = False
+            print("Шлагбаум жабық.")
+        
         # Overwrite html so we could see number of free parking spaces
         detect("templates/parking_qazaq.html", f"""
         <!DOCTYPE html>
