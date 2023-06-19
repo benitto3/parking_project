@@ -5,9 +5,17 @@ import mrcnn.config
 import mrcnn.utils
 from mrcnn.model import MaskRCNN
 from pathlib import Path
+import socket
+
+HOST = "192.168.8.100"  # The server's hostname or IP address
+PORT = 65432  # The port used by the server
+
+s = socket.socket()
+s.connect((HOST, PORT))
 
 # Getting rid of Tensorflow information and warnings
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
 # Configuration for the Mask-RCNN library
 class MaskRCNNConfig(mrcnn.config.Config):
     NAME = "coco_pretrained_model_config"
@@ -190,9 +198,11 @@ while video_capture.isOpened():
         if free_parking_space != 0:
             gate_open = True
             print("Тосқауыл ашық.")
+            s.send(str('1').encode())
         else:
             gate_open = False
             print("Тосқауыл жабық.")
+            s.send(str('0').encode())
         
         # Overwrite html so we could see number of free parking spaces
         detect("templates/parking_qazaq.html", f"""
